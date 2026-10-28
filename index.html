@@ -1,0 +1,97 @@
+<!doctype html>
+<!-- The Claude connector's sign-in page. Supabase Auth sends Ansh here when he
+     connects Nubbie Gainz in Claude; he signs in with the app's login and
+     approves, and Supabase sends him back to Claude. The source lives in the
+     private nubbie-gainz repo (signin/); tools/publish-signin.sh copies it to
+     the public nubbie-gainz-signin repo, which GitHub Pages serves. No data and
+     no passwords are stored here. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src https://gsauinadkzfwybvkooxj.supabase.co; img-src data:; base-uri 'none'; form-action 'none'">
+<title>Nubbie Gainz · Connect Claude</title>
+<style>
+  :root {
+    --ground: #17131B; --surface: #221C27; --raised: #2C2532; --sunk: #1B161F; --edge: #342B3A;
+    --text: #FBF1F7; --dim: #C7B6C3; --accent: #FF5FA8; --gold: #FFC24D; --no: #FF6B7A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--ground); color: var(--text);
+    font: 16px/1.45 ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; justify-content: center; padding: 40px 16px;
+  }
+  main { width: 100%; max-width: 420px; }
+  .logo { font-size: 44px; text-align: center; }
+  h1 { margin: 4px 0 2px; text-align: center; font-size: 26px; }
+  .sub { margin: 0 0 22px; text-align: center; color: var(--dim); }
+  .card { background: var(--surface); border: 1px solid var(--edge); border-radius: 22px; padding: 20px; }
+  h2 { margin: 0 0 10px; font-size: 19px; }
+  p { margin: 0 0 12px; color: var(--dim); }
+  label { display: block; margin: 12px 0 6px; font-weight: 600; }
+  input {
+    width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--edge);
+    background: var(--sunk); color: var(--text); font: inherit;
+  }
+  input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  button {
+    width: 100%; margin-top: 16px; padding: 13px; border: 0; border-radius: 999px; font: inherit; font-weight: 700;
+    color: #fff; background: linear-gradient(135deg, #F2559F, #B8236C); cursor: pointer;
+  }
+  button.quiet { background: var(--raised); color: var(--text); margin-top: 10px; }
+  button:disabled { opacity: .6; cursor: default; }
+  ul { margin: 0 0 12px; padding-left: 20px; color: var(--dim); }
+  li { margin: 3px 0; }
+  .where { background: var(--raised); border-radius: 14px; padding: 10px 14px; margin: 12px 0 0; color: var(--text); }
+  .where b { color: var(--accent); }
+  .warn { color: var(--gold); margin-top: 12px; }
+  .error { color: var(--no); margin: 10px 0 0; min-height: 1.4em; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo" aria-hidden="true">🦄</div>
+  <h1>Nubbie Gainz</h1>
+  <p class="sub">Connect Claude</p>
+
+  <form id="signin" class="card" hidden novalidate>
+    <h2>Sign in</h2>
+    <p>Use the same login as the app.</p>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <p id="signin-error" class="error" role="alert"></p>
+    <button id="signin-go" type="submit">Sign in</button>
+  </form>
+
+  <section id="consent" class="card" hidden>
+    <h2><span id="client">Claude</span> wants to use Nubbie Gainz</h2>
+    <p>It will be able to:</p>
+    <ul>
+      <li>read her workouts, records, bodyweight, water and streak</li>
+      <li>read the split and the progression rules</li>
+      <li>read her cycle summary, and her period list when you ask for it</li>
+      <li>change workouts, the split and the rules, after showing you each change and asking first</li>
+    </ul>
+    <p>It can never change her periods or cycle log.</p>
+    <div class="where">You'll go back to <b id="host">claude.ai</b></div>
+    <p id="not-claude" class="warn" hidden>That isn't Claude. Only approve if you started this yourself.</p>
+    <p id="consent-error" class="error" role="alert"></p>
+    <button id="approve" type="button">Approve</button>
+    <button id="deny" type="button" class="quiet">Don't allow</button>
+  </section>
+
+  <section id="message" class="card" hidden>
+    <h2 id="message-title"></h2>
+    <p id="message-text"></p>
+  </section>
+</main>
+<script src="supabase.js"></script>
+<script src="signin.js"></script>
+</body>
+</html>
